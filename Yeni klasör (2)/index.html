@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sude'me Özel ❤️</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for romantic icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Great Vibes, Inter, Dancing Script -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d0015;
+            background: radial-gradient(circle at center, #2d003b 0%, #0d0015 100%);
+            color: #fae8ff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .font-cursive {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .font-dancing {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Glassmorphism Styling - Mor Tonlar */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(217, 70, 239, 0.25);
+            box-shadow: 0 10px 40px 0 rgba(168, 85, 247, 0.25);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 12px rgba(236, 72, 153, 0.8), 0 0 24px rgba(168, 85, 247, 0.6);
+        }
+
+        .glow-button {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glow-button:active, .glow-button:hover {
+            box-shadow: 0 0 30px rgba(217, 70, 239, 0.9);
+            transform: scale(1.02);
+        }
+
+        /* Floating Hearts Canvas */
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Heartbeat Animation */
+        @keyframes heartPulse {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.2); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.2); }
+            70% { transform: scale(1); }
+        }
+
+        .animate-heart-beat {
+            animation: heartPulse 1.4s infinite ease-in-out;
+        }
+
+        /* Fade in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Shimmer Effect - Mor & Pembe Parlama */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, #f0abfc, #ffffff, #e879f9, #f472b6);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shimmer 2.5s linear infinite;
+        }
+
+        /* Mobile Intro Overlay */
+        #introOverlay {
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between items-center px-4 py-6 relative">
+
+    <!-- MP3 Ses Dosyası (index.html ile aynı klasörde olmalı) -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="muzik.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Interactive Canvas Background -->
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- MOBILE AUDIO UNLOCK OVERLAY -->
+    <div id="introOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-950 via-fuchsia-950 to-black text-center">
+        <div class="glass-card p-8 rounded-3xl max-w-sm w-full border border-fuchsia-500/40 flex flex-col items-center shadow-2xl">
+            <div class="w-20 h-20 rounded-full bg-purple-600/30 border border-fuchsia-400/50 flex items-center justify-center mb-5 animate-heart-beat">
+                <i class="fas fa-heart text-4xl text-fuchsia-400"></i>
+            </div>
+            <h2 class="font-cursive text-4xl text-fuchsia-300 mb-2 glow-text">Sude'me Özel</h2>
+            <p class="text-fuchsia-200/80 text-sm mb-6 font-light">Sana özel hazırladığım bu mektubu ve müziği açmak için tıkla ❤️</p>
+
+            <button onclick="startAppWithAudio()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-bold text-lg glow-button flex items-center justify-center gap-3 cursor-pointer">
+                <i class="fas fa-envelope-open text-xl"></i>
+                <span>Mektubu & Müziği Aç</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Music Control Toggle -->
+    <div class="z-20 fixed top-4 right-4 flex gap-3">
+        <button id="musicToggle" onclick="toggleAmbientMusic()" class="glass-card p-3 rounded-full text-fuchsia-300 hover:text-white transition duration-300 active:scale-95 flex items-center justify-center w-12 h-12 border border-fuchsia-500/40" title="Müziği Aç / Kapat">
+            <i id="musicIcon" class="fas fa-music text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <main class="z-10 w-full max-w-2xl my-auto flex flex-col items-center">
+
+        <!-- Header -->
+        <header class="text-center mb-5">
+            <div class="inline-block p-2 px-4 rounded-full glass-card border border-fuchsia-500/30 text-fuchsia-300 text-xs mb-3 tracking-widest uppercase font-semibold">
+                ✨ Sadece Sana Özel Bir Özür & İtiraf ✨
+            </div>
+            <h1 class="font-cursive text-6xl md:text-7xl text-fuchsia-300 glow-text leading-tight">
+                Sude'me... <i class="fas fa-heart text-fuchsia-500 text-4xl animate-heart-beat inline-block ml-1"></i>
+            </h1>
+        </header>
+
+        <!-- Main Confession Glass Card -->
+        <div class="glass-card w-full rounded-3xl p-6 md:p-8 text-purple-100 shadow-2xl relative overflow-hidden border border-fuchsia-500/30 my-2">
+
+            <div class="space-y-4 text-base md:text-lg leading-relaxed font-light text-purple-100 tracking-wide text-justify">
+                <p>
+                    <span class="font-bold text-fuchsia-300 text-xl font-cursive glow-text">Biricik sevgilim,</span> sana geçenlerde sınıfta kız olup olmadığını sorduğunda <span class="text-fuchsia-300 font-semibold">'yok'</span> demiştim hatırlıyorsan. Sana yalan söylediğim için o andan beri içim içimi yiyor, vicdan azabından mahvoldum.
+                </p>
+                <p>
+                    Aslında mesele değil, o anki ruh halimle kıskanır trip atarsın diye korktuğumdan öyle dedim; o anki kafayla o kadar saçmaladım ki, durduk yere yalan söylemiş oldum ve sonrasında bunu sana nasıl söyleyeceğimi bilemeyip korktum. Sırf bu yüzden aramızda yanlış bir şey anlaşılır, bana karşı güvensizlik olur diye ödüm koptu.
+                </p>
+                <p>
+                    Yoksa aramızda en ufak bir olay, iletişim, yakınlık olması imkansız; zaten meslek lisesi bilişim ortamı malum, uzaktan geçen yabancı insanlar hepsi.
+                </p>
+                <p>
+                    Kafanda asla en ufak bir şüphe ya da yanlış bir düşünce olsun istemiyorum <span class="text-fuchsia-300 font-semibold">güzelim</span>, o yüzden içimde tutamadım ve hemen düzeltmek istedim. Sana yalan söylediğim için bin pişmanım, beni affet lütfen.
+                </p>
+                <div class="p-4 rounded-2xl bg-purple-950/50 border border-fuchsia-500/40 text-purple-200 my-4 shadow-inner">
+                    <p class="italic text-purple-200">
+                        "Zaten sınıfın kızlarına gelirsek; <br>
+                        <span class="font-semibold text-fuchsia-300">A - Sude, B - Sude, C - yine Sude...</span> <br>
+                        Çünkü benim gönlümde, ruhumda, aklımda, gözlerimde tek isim var <span class="font-semibold text-fuchsia-300">her şeyim</span>, <span class="font-semibold text-fuchsia-300">hayatımın anlamı</span>, <span class="font-semibold text-fuchsia-300">yeryüzü güneşim</span>; sadece Sude, yine Sude, evvelim de Sude, ahirim de Sude, sadece Sude, yine..."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Grand Finale Trigger Button -->
+            <div id="revealSection" class="mt-8 text-center pt-2">
+                <button id="revealBtn" onclick="triggerGrandFinale()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-bold text-lg md:text-xl glow-button flex items-center justify-center gap-3 cursor-pointer border border-fuchsia-400/40">
+                    <i class="fas fa-heart text-2xl animate-bounce"></i>
+                    <span>Devamını Gör & Gerçekleri Oku...</span>
+                </button>
+            </div>
+
+            <!-- Hidden Grand Finale Modal Content -->
+            <div id="finaleContainer" class="hidden mt-8 text-center py-6 border-t border-fuchsia-500/30 animate-fade-in">
+                <p class="text-xs tracking-widest text-fuchsia-300 uppercase font-semibold mb-2">Benim Tek Gerçeğim:</p>
+                <h2 id="sudeText" onclick="popHeartExplosion(event)" class="font-dancing text-6xl md:text-8xl text-fuchsia-400 font-black shimmer-text glow-text tracking-wider uppercase transform transition-transform duration-500 active:scale-110 cursor-pointer my-2">
+                    SUDEEEEEEE!
+                </h2>
+                <p class="text-purple-200 mt-4 text-sm md:text-base font-light italic">
+                    ❤️ Seni Her Şeyden Çok Seviyorum Biriciğim ❤️
+                </p>
+
+                <div class="flex flex-wrap gap-3 justify-center mt-6">
+                    <button onclick="popHeartExplosion(event)" class="px-5 py-2.5 rounded-full glass-card hover:bg-purple-600/40 text-fuchsia-200 text-sm border border-fuchsia-500/40 flex items-center gap-2 active:scale-95 transition">
+                        <i class="fas fa-heart text-fuchsia-400"></i> Kalp Yağdır
+                    </button>
+                    <button onclick="toggleAmbientMusic()" class="px-5 py-2.5 rounded-full glass-card hover:bg-purple-600/40 text-fuchsia-200 text-sm border border-fuchsia-500/40 flex items-center gap-2 active:scale-95 transition">
+                        <i class="fas fa-music text-fuchsia-300"></i> Müziği Durdur / Çal
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Interactive Love Button -->
+        <div class="mt-6 w-full flex justify-center">
+            <button onclick="createHeartAtClick(event); popConfetti();" class="px-8 py-3 rounded-full bg-purple-950/60 hover:bg-purple-900/80 border border-fuchsia-500/40 text-fuchsia-200 font-medium text-sm flex items-center gap-2 backdrop-blur-md transition duration-300 shadow-lg active:scale-95">
+                <i class="fas fa-heart text-fuchsia-400"></i>
+                <span>Seni Çok Seviyorum (Tıkla!)</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="z-10 text-center text-fuchsia-400/60 text-xs py-4">
+        Sadece Sude'ye Özel Hazırlanmıştır ❤️
+    </footer>
+
+    <!-- Interactive Animations Script -->
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        let hearts = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Heart {
+            constructor(x, y, isBurst = false) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || canvas.height + Math.random() * 20;
+                this.size = isBurst ? (Math.random() * 16 + 10) : (Math.random() * 12 + 6);
+                this.speedY = isBurst ? (Math.random() * -4 - 2) : (Math.random() * -1.5 - 0.5);
+                this.speedX = isBurst ? (Math.random() * 6 - 3) : (Math.random() * 1 - 0.5);
+                this.opacity = isBurst ? 1 : Math.random() * 0.7 + 0.3;
+                this.color = `hsl(${Math.random() * 60 + 270}, 100%, ${Math.random() * 25 + 65}%)`;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.05;
+                this.isBurst = isBurst;
+                this.life = 0;
+                this.maxLife = isBurst ? Math.random() * 80 + 60 : 500;
+                this.dead = false;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = Math.max(this.opacity, 0);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const d = this.size;
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-d / 2, -d / 2, -d, d / 3, 0, d);
+                ctx.bezierCurveTo(d, d / 3, d / 2, -d / 2, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotSpeed;
+                this.life++;
+
+                if (this.isBurst) {
+                    this.opacity -= 0.015;
+                    this.speedY += 0.05; // yerçekimi etkisi
+                    if (this.life > this.maxLife || this.opacity <= 0) this.dead = true;
+                } else {
+                    if (this.y < -30) this.dead = true;
+                }
+            }
+        }
+
+        // Arka planda süzülen kalpler
+        for (let i = 0; i < 25; i++) {
+            hearts.push(new Heart(Math.random() * canvas.width, Math.random() * canvas.height));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => { h.update(); h.draw(); });
+            hearts = hearts.filter(h => !h.dead);
+            while (hearts.filter(h => !h.isBurst).length < 25) {
+                hearts.push(new Heart());
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        function createHeartAtClick(e) {
+            const x = (e && e.clientX) || canvas.width / 2;
+            const y = (e && e.clientY) || canvas.height / 2;
+            for (let i = 0; i < 20; i++) hearts.push(new Heart(x, y, true));
+        }
+
+        function popConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.7 },
+                    colors: ['#d946ef', '#a855f7', '#ec4899', '#ffffff']
+                });
+            }
+        }
+
+        function popHeartExplosion(e) {
+            createHeartAtClick(e);
+            popConfetti();
+        }
+
+        const music = document.getElementById('bg-music');
+        music.addEventListener('error', () => {
+            alert('Müzik dosyası yüklenemedi: ' + music.currentSrc);
+        });
+        const musicIcon = document.getElementById('musicIcon');
+
+        function startAppWithAudio() {
+            const overlay = document.getElementById('introOverlay');
+            overlay.style.opacity = '0';
+            overlay.style.visibility = 'hidden';
+            overlay.style.pointerEvents = 'none';
+            music.play().catch(err => console.log('Müzik çalınamadı:', err));
+            musicIcon.className = 'fas fa-music text-lg';
+        }
+
+        function toggleAmbientMusic() {
+            if (music.paused) {
+                music.play().catch(err => console.log(err));
+                musicIcon.className = 'fas fa-music text-lg';
+            } else {
+                music.pause();
+                musicIcon.className = 'fas fa-volume-mute text-lg';
+            }
+        }
+
+        function triggerGrandFinale() {
+            document.getElementById('revealSection').classList.add('hidden');
+            document.getElementById('finaleContainer').classList.remove('hidden');
+            popConfetti();
+            setTimeout(popConfetti, 600);
+        }
+    </script>
+</body>
+</html>
